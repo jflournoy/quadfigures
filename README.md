@@ -1,0 +1,3 @@
+# quadfigures
+
+This is a set of scripts for making four view (left and right, medial and lateral) views of a .nii.gz statistical map projected in Freesurfer (as in Peverill et al. 2014). It's barely documented so use at your own risk. On many systems, the images will be distorted if the gui window of tksurfer is obscured in some way. Opening it on a virtual x server would be the best way to handle this.

@@ -1,0 +1,3 @@
+make_lateral_view
+rotate_brain_y 180
+redraw
