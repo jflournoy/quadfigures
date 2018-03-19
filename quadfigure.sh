@@ -1,15 +1,38 @@
-#Tries to stitch together medial and lateral views of lh and rh, given an fsl nii in mni space.
-#make the lh medial image with a scale bar.
+#!/bin/bash 
+usage=`cat <<EOF 
+This script tries to stitch medial and lateral views of lh and rh in to four panel figures with a legend. It can run on multiple .nii files to generate more than one figure at once, and can also be configured to reverse the standard color coding for 'negative' images.
+
+Usage:
+quadfigure.sh (-i) [image 1] [image 2] ... 
+
+-i will make positive values blue.
+image 1, image 2 must be .nii.gz files in MNI space.
+
+EOF`
+
+if [ "$#" -eq 0 ]; then
+    echo "ERROR: no arguments listed"
+    echo "$usage"
+    exit 1
+fi
+
+if [ $1 -eq -i ]; then
+    iflag=1
+    shift
+else
+    iflag=0
+fi
+
 for i in $@;
 do
     n1=`echo $i | tr '/' ' ' | awk '{print $1}'`
     n2=`basename $i .nii.gz`
     name=${n1}_$n2
     #fname=${n1}_$n2_figure
-#echo $name
+    #echo $name
+    #make the lh medial image with a scale bar.
     mkdir -p tmp
-    #uncomment invphaseflag if you want the blobs to be blue
-    commonopts="pial -gray -mni152reg -invphaseflag 1"
+    commonopts="pial -gray -mni152reg  -invphaseflag $iflag"
     tksurfer fsaverage lh $commonopts -colscalebarflag 1 -colscaletext 1 -overlay $i -tcl make1image.tcl
     mv tmp/lateral.tiff tmp/scale.tiff
     tksurfer fsaverage lh $commonopts -colscalebarflag 0 -colscaletext 0 -overlay $i -tcl make2images.tcl
