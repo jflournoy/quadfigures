@@ -16,7 +16,7 @@ if [ "$#" -eq 0 ]; then
     exit 1
 fi
 
-if [ $1 -eq -i ]; then
+if [ $1 == "-i" ]; then
     iflag=1
     shift
 else
@@ -25,14 +25,17 @@ fi
 
 for i in $@;
 do
+    if [ ! -e $1 ]; then
+	echo "ERROR: $1 not found"
+	exit 1
+    fi
+    
     n1=`echo $i | tr '/' ' ' | awk '{print $1}'`
     n2=`basename $i .nii.gz`
     name=${n1}_$n2
-    #fname=${n1}_$n2_figure
-    #echo $name
-    #make the lh medial image with a scale bar.
+#make the lh medial image with a scale bar.
     mkdir -p tmp
-    commonopts="pial -gray -mni152reg  -invphaseflag $iflag"
+    commonopts="pial -gray -mni152reg -invphaseflag $iflag"
     tksurfer fsaverage lh $commonopts -colscalebarflag 1 -colscaletext 1 -overlay $i -tcl make1image.tcl
     mv tmp/lateral.tiff tmp/scale.tiff
     tksurfer fsaverage lh $commonopts -colscalebarflag 0 -colscaletext 0 -overlay $i -tcl make2images.tcl
@@ -51,7 +54,7 @@ do
     convert tmp/lh-medial.tiff tmp/rh-medial.tiff +append tmp/all-medial.tiff
     convert tmp/all-lateral.tiff tmp/all-medial.tiff -append tmp/all.tiff
     
-#extract the scale from lh lateral and blackound the remaining
+#extract the scale from lh lateral and blackout the remaining
     mogrify -crop 65x85+530+420 tmp/scale.tiff
     #convert -crop 135x157+1051+1030 tmp/all.tiff tmp/scale.tiff
     #mogrify -fill black -draw 'rectangle 1051,688 1185,997' tmp/all.tiff
@@ -62,5 +65,5 @@ do
 
 #write the final filename
     cp tmp/final.tiff ${name}.tiff
-    rm -rf tmp
+    #rm -rf tmp
 done
