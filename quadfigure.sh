@@ -65,5 +65,5 @@ do
 
 #write the final filename
     cp tmp/final.tiff ${name}.tiff
-    #rm -rf tmp
+    rm -rf tmp
 done
