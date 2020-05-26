@@ -36,14 +36,16 @@ do
 #make the lh medial image with a scale bar.
     mkdir -p tmp
     commonopts="pial -gray -mni152reg -invphaseflag $iflag"
+    lyeo="-annotation $SUBJECTS_DIR/fsaverage/label/lh.Yeo2011_7Networks_N1000.annot -label-outline"
+    ryeo="-annotation $SUBJECTS_DIR/fsaverage/label/rh.Yeo2011_7Networks_N1000.annot -label-outline"
     tksurfer fsaverage lh $commonopts -colscalebarflag 1 -colscaletext 1 -overlay $i -tcl make1image.tcl
     mv tmp/lateral.tiff tmp/scale.tiff
-    tksurfer fsaverage lh $commonopts -colscalebarflag 0 -colscaletext 0 -overlay $i -tcl make2images.tcl
+    tksurfer fsaverage lh $commonopts -colscalebarflag 0 -colscaletext 0 -overlay $i -tcl make2images.tcl $lyeo
     
     mv tmp/lateral.tiff tmp/lh-lateral.tiff
     mv tmp/medial.tiff tmp/lh-medial.tiff
     
-    tksurfer fsaverage rh $commonopts -colscalebarflag 0 -colscaletext 0 -overlay $i -tcl make2images.tcl
+    tksurfer fsaverage rh $commonopts -colscalebarflag 0 -colscaletext 0 -overlay $i -tcl make2images.tcl $ryeo
     mv tmp/lateral.tiff tmp/rh-lateral.tiff
     mv tmp/medial.tiff tmp/rh-medial.tiff
 
